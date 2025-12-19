@@ -24,14 +24,14 @@ from sklearn.metrics import (accuracy_score, roc_auc_score, confusion_matrix,
 
 # Ayarlar
 warnings.filterwarnings('ignore')
-st.set_page_config(page_title="Miuul Alışveriş Analizi (Final)", page_icon="🛍️", layout="wide")
+st.set_page_config(page_title="Miuul Müşterilerin Abone Olma Analizi", page_icon="🛍️", layout="wide")
 
 # CSS
 st.markdown("""
 <style>
-    .main { background-color: #f8f9fa; }
+    .main { background-color: #c9a487; }
     h1 { color: #1e3a8a; }
-    div[data-testid="stMetric"] { background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 5px; padding: 10px; }
+    div[data-testid="stMetric"] { background-color: #f5f1e9; border: 1px solid #d6473f; border-radius: 5px; padding: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
