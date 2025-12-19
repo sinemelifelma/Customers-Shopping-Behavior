@@ -29,9 +29,9 @@ st.set_page_config(page_title="Miuul Müşterilerin Abone Olma Analizi", page_ic
 # CSS
 st.markdown("""
 <style>
-    .main { background-color: #c9a487; }
-    h1 { color: #e6161c; }
-    div[data-testid="stMetric"] { background-color: #643b2a; border: 1px solid #d6473f; border-radius: 7px; padding: 10px; }
+    .main { background-color: #dd3436; }
+    h1 { color: #eadeda; }
+    div[data-testid="stMetric"] { background-color: #dd7e7b; border: 1px solid #6d1313; border-radius: 7px; padding: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
