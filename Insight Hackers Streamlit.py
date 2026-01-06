@@ -526,11 +526,14 @@ with st.spinner('Veri işleniyor...'):
 import os
 from pathlib import Path
 
-# Dosya yolunu boşver, direkt internet linkini kullan:
-github_image_url = "https://raw.githubusercontent.com/sinemelifelma/customers-shopping-behavior/main/assets/insight_hackers_cover.jpeg"
-
 with tab_home:
-    st.image(github_image_url, use_container_width=True)
+    # Dosya yolu yerine doğrudan GitHub linkini kullanıyoruz
+    img_url = "https://raw.githubusercontent.com/sinemelifelma/customers-shopping-behavior/main/assets/insight_hackers_cover.jpeg"
+
+    st.image(
+        img_url,
+        use_container_width=True
+    )
         
     st.divider()
 
