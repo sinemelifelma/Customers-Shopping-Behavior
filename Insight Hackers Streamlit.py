@@ -4,7 +4,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from pathlib import Path
 from PIL import Image
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score
@@ -526,7 +525,7 @@ with st.spinner('Veri işleniyor...'):
 from pathlib import Path
 
 with tab_home:
-    img_path = Path(__file__).parent / "assets" / "insight_hackers_cover.jpeg"
+    img_path = base / "assets" / "insight_hackers_cover.jpeg"
 
     st.image(
         str(img_path),
