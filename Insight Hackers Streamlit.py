@@ -1029,6 +1029,7 @@ with tab_seg:
     )
 
     # ✅ Profili session state'e kaydet
+    st.session_state["crm_mapping"] = display_df[['Cluster', 'Segment İsmi', 'Önerilen Aksiyon']]
     st.session_state["profile"] = segment_profiles
     st.session_state["display_df"] = display_df
 
@@ -1766,92 +1767,61 @@ with tab_comp:
 # TAB 5: CRM ANALİZİ
 # =============================================================================
 with tab_crm:
-    st.header("💼 CRM ve Segment Bazlı Aksiyon Planı")
-    
-    if 'df_report' in st.session_state and st.session_state['df_report'] is not None:
-        
-        st.subheader("📊 Segment Bazlı Abonelik Tahmini")
-        
-        df_report = st.session_state['df_report']
-        
-        # Her segment için detaylı analiz
-        crm_summary = df_report.groupby('Cluster').agg({
-            'CUSTOMER_ID': 'count',
-            'SUBSCRIPTION_STATUS': lambda x: (x == 'Yes').mean(),
-            'TOTAL_SPEND_WEIGHTED_NEW': 'mean',
-            'PREVIOUS_PURCHASES': 'mean',
-            'FREQUENCY_VALUE_NEW': 'mean',
-            'PROMO_USED_VAL': 'mean'
-        }).round(3)
-        
-        crm_summary.columns = ['n_customers', 'crm_target_rate', 'avg_spend', 'avg_prev_purchases', 'avg_freq', 'promo_rate']
-        
-        # CRM Aksiyon Belirleme
-        spend_median = crm_summary["avg_spend"].median()
-        target_mean = crm_summary["crm_target_rate"].mean()
-        
-        def crm_action(row):
-            # 1. Yüksek Abonelik & Yüksek Harcama -> En Değerli Müşteriler
-            if row["crm_target_rate"] >= target_mean and row["avg_spend"] >= spend_median:
-                return "Upsell / Premium teklif"
-    
-            # 2. Yüksek Abonelik & Düşük Harcama -> Sadık ama Küçük Alışveriş Yapanlar
-            elif row["crm_target_rate"] >= target_mean and row["avg_spend"] < spend_median:
-                return "Quick win / light incentive"
-    
-            # 3. Düşük Abonelik & Yüksek Harcama -> "Nurture / Education" (Potansiyeli yüksek ama abone değil)
-            elif row["crm_target_rate"] < target_mean and row["avg_spend"] >= spend_median:
-                return "Nurture / Education (Özel İlgi)"
-    
-            # 4. Düşük Abonelik & Düşük Harcama -> Kaybedilmeye Yakın
-            else:
-                return "Winback / Agresif Promosyon"
-        
-        crm_summary['action'] = crm_summary.apply(crm_action, axis=1)
-        
-        # Segment isimlerini ekle
-        if 'profile' in st.session_state and st.session_state['profile'] is not None:
-            profile = st.session_state['profile']
-            segment_names = dict(zip(profile['Cluster'], profile['Segment İsmi']))
-            crm_summary['Segment İsmi'] = crm_summary.index.map(segment_names)
-            crm_summary = crm_summary[['Segment İsmi', 'n_customers', 'crm_target_rate', 'avg_spend', 
-                                       'avg_prev_purchases', 'avg_freq', 'promo_rate', 'action']]
-        
-        # Türkçe kolon isimleri
-        crm_summary_display = crm_summary.rename(columns={
-            'Segment İsmi': 'Segment',
+    st.header("💼 CRM Analizi ve Aksiyon Planı")
+
+    if "df_report" in st.session_state and "crm_mapping" in st.session_state:
+        df_report = st.session_state["df_report"]
+        mapping_info = st.session_state["crm_mapping"]
+
+        # Cluster bazlı özet tabloyu oluştur
+        crm_summary = df_report.groupby("Cluster").agg(
+            n_customers=("CUSTOMER_ID", "count"),
+            crm_target_rate=("SUBSCRIPTION", "mean"),
+            avg_spend=("PURCHASE_AMOUNT_(USD)", "mean"),
+            avg_prev_purchases=("PREVIOUS_PURCHASES", "mean"),
+            avg_freq=("FREQUENCY_VALUE_NEW", "mean"),
+            promo_rate=("PROMO_USED_VAL", "mean")
+        )
+
+        # Segmentasyon sekmesinden gelen isimleri ve aksiyonları eşleştir
+        name_dict = dict(zip(mapping_info['Cluster'], mapping_info['Segment İsmi']))
+        action_dict = dict(zip(mapping_info['Cluster'], mapping_info['Önerilen Aksiyon']))
+
+        crm_summary['Segment'] = crm_summary.index.map(name_dict)
+        crm_summary['Önerilen Aksiyon'] = crm_summary.index.map(action_dict)
+
+        # Türkçeleştirme ve Formatlama
+        crm_display = crm_summary.rename(columns={
             'n_customers': 'Müşteri Sayısı',
             'crm_target_rate': 'Abonelik Oranı',
             'avg_spend': 'Ort. Harcama',
             'avg_prev_purchases': 'Ort. Alışveriş',
             'avg_freq': 'Ort. Frekans',
-            'promo_rate': 'Promo Kullanım',
-            'action': 'Önerilen Aksiyon'
+            'promo_rate': 'Promo Kullanım'
         })
+
+        # Oranları düzelt
+        crm_display['Abonelik Oranı'] = (crm_display['Abonelik Oranı'] * 100).round(1)
+        crm_display['Promo Kullanım'] = (crm_display['Promo Kullanım'] * 100).round(1)
+
+        # Tabloyu göster
+        st.dataframe(
+            crm_display[['Segment', 'Müşteri Sayısı', 'Abonelik Oranı', 'Ort. Harcama', 'Önerilen Aksiyon']]
+            .sort_values("Abonelik Oranı", ascending=False)
+            .style.background_gradient(cmap='RdYlGn', subset=['Abonelik Oranı', 'Ort. Harcama'])
+            .format({'Abonelik Oranı': '{:.1f}%', 'Ort. Harcama': '${:.2f}'}),
+            use_container_width=True
+        )
+
+        st.success("✅ Veriler Segmentasyon sekmesiyle %100 uyumlu hale getirildi.")
         
-        crm_summary_display['Abonelik Oranı'] = (crm_summary_display['Abonelik Oranı'] * 100).round(1)
-        crm_summary_display['Promo Kullanım'] = (crm_summary_display['Promo Kullanım'] * 100).round(1)
-        
-        crm_summary_display = crm_summary_display.sort_values('Abonelik Oranı', ascending=False)
-        
-        st.dataframe(crm_summary_display.style.background_gradient(
-            cmap='RdYlGn', 
-            subset=['Abonelik Oranı', 'Ort. Harcama']
-        ).format({
-            'Abonelik Oranı': '{:.1f}%',
-            'Ort. Harcama': '${:.2f}',
-            'Ort. Alışveriş': '{:.1f}',
-            'Ort. Frekans': '{:.1f}',
-            'Promo Kullanım': '{:.1f}%'
-        }))
-        
-        st.info(f"""
-        📊 **CRM Eşik Değerleri:**
-        - Abonelik Ortalaması: %{target_mean*100:.1f}
-        - Harcama Medyanı: ${spend_median:.2f}
-        """)
-        
-        st.divider()
+    else:
+        st.warning("⚠️ Lütfen önce 'Segmentasyon' sekmesine giderek analizi çalıştırın.")
+
+    st.divider()
+    # Segment Playbook fonksiyonunu çağır (Eğer varsa)
+    if "display_df" in locals() or "mapping_info" in locals():
+        render_segment_playbook(segment_profiles)
         # =============================================================================
         # 💡 SEGMENT BAZLI AKSİYON PLAYBOOK (SADECE CRM'DE)
         # =============================================================================
