@@ -524,31 +524,31 @@ with st.spinner('Veri işleniyor...'):
 # 🧾 BAŞLIK SAYFASI (Landing / Cover)
 # =============================================================================
 
-    # =============================================================================
-    # 📌 BUSINESS PROBLEM
-    # =============================================================================
-    st.subheader("📌 Business Problem")
+# =============================================================================
+# 📌 BUSINESS PROBLEM
+# =============================================================================
+st.subheader("📌 Business Problem")
 
-    st.markdown("""
-    Bir e-ticaret şirketi; **müşteri aboneliğini artırmak**, **promosyon bütçesini verimli kullanmak** ve **müşteri davranışlarını daha iyi anlamak** istemektedir.
+st.markdown("""
+Bir e-ticaret şirketi; **müşteri aboneliğini artırmak**, **promosyon bütçesini verimli kullanmak** ve **müşteri davranışlarını daha iyi anlamak** istemektedir.
 
-    Ancak müşteri tabanı:
-    - Harcama düzeyi  
-    - Alışveriş sıklığı  
-    - Promosyon duyarlılığı  
-    - Demografik özellikler  
-    açısından oldukça heterojendir.
+Ancak müşteri tabanı:
+- Harcama düzeyi  
+- Alışveriş sıklığı  
+- Promosyon duyarlılığı  
+- Demografik özellikler  
+açısından oldukça heterojendir.
 
-    ### Bu projede amaç:
-    - Müşterileri davranışsal özelliklerine göre **segmentlere ayırmak**
-    - Her segment için **abonelik potansiyelini** ve **gelir değerini** özetlemek
-    - Segment bazlı **CRM aksiyonları** (Upsell, Nurture, Winback) önermek
-    - Modelleme sürecinde **leakage**, **dengesiz target** ve **yüksek korelasyon**
-      gibi riskleri kontrol ederek güvenilir bir analitik yapı kurmak
+### Bu projede amaç:
+- Müşterileri davranışsal özelliklerine göre **segmentlere ayırmak**
+- Her segment için **abonelik potansiyelini** ve **gelir değerini** özetlemek
+- Segment bazlı **CRM aksiyonları** (Upsell, Nurture, Winback) önermek
+- Modelleme sürecinde **leakage**, **dengesiz target** ve **yüksek korelasyon**
+    gibi riskleri kontrol ederek güvenilir bir analitik yapı kurmak
 
-    ✅ **Çıktı:**  
-    Segment Profilleri • Aksiyon Playbook • Abonelik Tahmin Modeli • Güçlü EDA
-    """)
+✅ **Çıktı:**  
+Segment Profilleri • Aksiyon Playbook • Abonelik Tahmin Modeli • Güçlü EDA
+""")
 
 st.divider()
 
