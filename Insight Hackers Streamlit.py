@@ -1029,9 +1029,10 @@ with tab_seg:
     )
 
     # ✅ Profili session state'e kaydet
-    st.session_state["crm_mapping"] = display_df[['Cluster', 'Segment İsmi', 'Önerilen Aksiyon']]
-    st.session_state["profile"] = segment_profiles
-    st.session_state["display_df"] = display_df
+    # --- AT THE END OF TAB_SEG ---
+    st.session_state["df_report"] = df_report  # The full dataframe with clusters
+    st.session_state["profile_for_playbook"] = segment_profiles  # The summary table for cards
+    st.session_state["crm_mapping"] = display_df[['Cluster', 'Segment İsmi', 'Önerilen Aksiyon']] # The names
 
     st.divider()
 
@@ -1801,16 +1802,16 @@ with tab_crm:
         
         st.divider()
 
-        # 4. Render Playbook (Called ONLY ONCE here)
-        # This checks the same session state we saved in the Segmentation tab
+        # 2. THE PLAYBOOK (Line 1826 area)
+        # Ensure 'if' is aligned with 'df_report = ...' above
         if "profile_for_playbook" in st.session_state:
             render_segment_playbook(st.session_state["profile_for_playbook"])
         else:
-            st.info("Playbook data is being prepared...")
+            st.warning("Please run the Segmentation analysis to view the Playbook details.")
 
-    # This 'else' aligns with the first 'if' at the top of the tab
     else:
-        st.warning("⚠️ Action Required: Please go to the 'Segmentation' tab and run the analysis first to generate customer clusters.")
+        # This else must align with the 'if df_report' at the top
+        st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
 
 # =============================================================================
 # TAB 6: SİMÜLATÖR
