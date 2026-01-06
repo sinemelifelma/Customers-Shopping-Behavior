@@ -526,30 +526,8 @@ with st.spinner('Veri işleniyor...'):
 import os
 from pathlib import Path
 
-# 1. Adım: Çalışan dosyanın tam konumunu bulalım
-current_dir = Path(__file__).parent.absolute()
-
-# 2. Adım: Görsel yolunu oluşturalım
-# GitHub'daki klasör yapına göre: assets/insight_hackers_cover.jpeg
-img_path = current_dir / "assets" / "insight_hackers_cover.jpeg"
-
-with tab_home:
-    # 3. Adım: Kontrol et ve yükle
-    if img_path.exists():
-        st.image(str(img_path), use_container_width=True)
-    else:
-        # Eğer hata alırsan burası çalışacak ve sana yolu gösterecek
-        st.error("Görsel Bulunamadı!")
-        st.warning(f"Sistem şu yolu arıyor: {img_path}")
-        
-        # 4. Adım: Hata ayıklama (Dedektif kısmı)
-        st.write("Klasörde ne var?")
-        try:
-            st.write("Mevcut dosyalar:", os.listdir(str(current_dir)))
-            if os.path.exists(current_dir / "assets"):
-                st.write("Assets içindekiler:", os.listdir(str(current_dir / "assets")))
-        except Exception as e:
-            st.write("Dizin listelenemedi:", e)
+# Dosya yolunu boşver, direkt internet linkini kullan:
+github_image_url = "https://raw.githubusercontent.com/sinemelifelma/customers-shopping-behavior/main/assets/insight_hackers_cover.jpeg"
         
     st.divider()
 
