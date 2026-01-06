@@ -525,18 +525,16 @@ with st.spinner('Veri işleniyor...'):
 # =============================================================================
 from pathlib import Path
 
-base_path = Path(__file__).parent
-img_path = base_path / "assets" / "insight_hackers_cover.jpeg"
+# Bu dosyanın bulunduğu klasörü temel alır
+current_dir = Path(__file__).parent
+img_path = current_dir / "assets" / "insight_hackers_cover.jpeg"
 
 with tab_home:
-    # Dosyanın gerçekten var olup olmadığını kontrol edelim (Debug için)
+    # Dosyanın varlığını kontrol edip hata basmasını sağlayalım
     if img_path.exists():
         st.image(str(img_path), use_container_width=True)
     else:
-        st.error(f"Görsel bulunamadı! Aranan yol: {img_path}")
-        # Mevcut dizindeki dosyaları listele (Nerede olduğumuzu görmek için)
-        st.write("Mevcut dosyalar:", os.listdir(str(base_path / "assets")))
-    st.image("assets/insight_hackers_cover.jpeg", use_container_width=True)
+        st.error(f"Görsel bulunamadı! Aranan tam yol: {img_path}")
 
     st.divider()
 
