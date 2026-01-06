@@ -1767,68 +1767,47 @@ with tab_comp:
 # TAB 5: CRM ANALİZİ
 # =============================================================================
 with tab_crm:
-    st.header("💼 CRM Analizi ve Aksiyon Planı")
-
-    if "df_report" in st.session_state and "crm_mapping" in st.session_state:
-        df_report = st.session_state["df_report"]
-        mapping_info = st.session_state["crm_mapping"]
-
-        # Cluster bazlı özet tabloyu oluştur
-        crm_summary = df_report.groupby("Cluster").agg(
-            n_customers=("CUSTOMER_ID", "count"),
-            crm_target_rate=("SUBSCRIPTION", "mean"),
-            avg_spend=("PURCHASE_AMOUNT_(USD)", "mean"),
-            avg_prev_purchases=("PREVIOUS_PURCHASES", "mean"),
-            avg_freq=("FREQUENCY_VALUE_NEW", "mean"),
-            promo_rate=("PROMO_USED_VAL", "mean")
-        )
-
-        # Segmentasyon sekmesinden gelen isimleri ve aksiyonları eşleştir
-        name_dict = dict(zip(mapping_info['Cluster'], mapping_info['Segment İsmi']))
-        action_dict = dict(zip(mapping_info['Cluster'], mapping_info['Önerilen Aksiyon']))
-
-        crm_summary['Segment'] = crm_summary.index.map(name_dict)
-        crm_summary['Önerilen Aksiyon'] = crm_summary.index.map(action_dict)
-
-        # Türkçeleştirme ve Formatlama
-        crm_display = crm_summary.rename(columns={
-            'n_customers': 'Müşteri Sayısı',
-            'crm_target_rate': 'Abonelik Oranı',
-            'avg_spend': 'Ort. Harcama',
-            'avg_prev_purchases': 'Ort. Alışveriş',
-            'avg_freq': 'Ort. Frekans',
-            'promo_rate': 'Promo Kullanım'
-        })
-
-        # Oranları düzelt
-        crm_display['Abonelik Oranı'] = (crm_display['Abonelik Oranı'] * 100).round(1)
-        crm_display['Promo Kullanım'] = (crm_display['Promo Kullanım'] * 100).round(1)
-
-        # Tabloyu göster
-        st.dataframe(
-            crm_display[['Segment', 'Müşteri Sayısı', 'Abonelik Oranı', 'Ort. Harcama', 'Önerilen Aksiyon']]
-            .sort_values("Abonelik Oranı", ascending=False)
-            .style.background_gradient(cmap='RdYlGn', subset=['Abonelik Oranı', 'Ort. Harcama'])
-            .format({'Abonelik Oranı': '{:.1f}%', 'Ort. Harcama': '${:.2f}'}),
-            use_container_width=True
-        )
-
-        st.success("✅ Veriler Segmentasyon sekmesiyle %100 uyumlu hale getirildi.")
+    st.header("💼 CRM ve Segment Bazlı Aksiyon Planı")
+    
+    # LEVEL 1: Main check for data
+    if 'df_report' in st.session_state and st.session_state['df_report'] is not None:
         
-    else:
-        st.warning("⚠️ Lütfen önce 'Segmentasyon' sekmesine giderek analizi çalıştırın.")
+        # LEVEL 2: Inside the IF block (indented by 4 spaces)
+        df_report = st.session_state['df_report']
+        
+        # Calculate summary metrics
+        crm_summary = df_report.groupby('Cluster').agg({
+            'CUSTOMER_ID': 'count',
+            'SUBSCRIPTION': 'mean',
+            'TOTAL_SPEND_WEIGHTED_NEW': 'mean',
+            'PREVIOUS_PURCHASES': 'mean',
+            'FREQUENCY_VALUE_NEW': 'mean',
+            'PROMO_USED_VAL': 'mean'
+        }).round(3)
+        
+        crm_summary.columns = ['n_customers', 'crm_target_rate', 'avg_spend', 'avg_prev_purchases', 'avg_freq', 'promo_rate']
+        
+        # Logic for segment names
+        if 'crm_mapping' in st.session_state:
+            mapping = st.session_state['crm_mapping']
+            name_map = dict(zip(mapping['Cluster'], mapping['Segment İsmi']))
+            crm_summary['Segment'] = crm_summary.index.map(name_map)
+        
+        # Display the main dataframe
+        st.subheader("📊 Segment Performance Overview")
+        st.dataframe(crm_summary, use_container_width=True)
+        
+        st.divider()
 
-    st.divider()
+        # LEVEL 2: Call the Playbook (Line 1826 area)
+        if "profile_for_playbook" in st.session_state:
+            render_segment_playbook(st.session_state["profile_for_playbook"])
+        else:
+            st.warning("Please run Segmentation analysis first.")
 
-        # 2. THE PLAYBOOK (Line 1826 area)
-        # Ensure 'if' is aligned with 'df_report = ...' above
-    if "profile_for_playbook" in st.session_state:
-        render_segment_playbook(st.session_state["profile_for_playbook"])
+    # LEVEL 1: This ELSE (Line 1829) MUST align with the IF at Level 1
     else:
-        st.warning("Please run the Segmentation analysis to view the Playbook details.")
-else:
-    # This else must align with the 'if df_report' at the top
-    st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
+        st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
 
 # =============================================================================
 # TAB 6: SİMÜLATÖR
