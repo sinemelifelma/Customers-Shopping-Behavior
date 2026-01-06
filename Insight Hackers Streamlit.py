@@ -523,18 +523,25 @@ with st.spinner('Veri işleniyor...'):
 # =============================================================================
 # 🧾 BAŞLIK SAYFASI (Landing / Cover)
 # =============================================================================
+import streamlit as st
 from pathlib import Path
 
-# Bu dosyanın bulunduğu klasörü temel alır
-current_dir = Path(__file__).parent
-img_path = current_dir / "assets" / "insight_hackers_cover.jpeg"
+# 1. Ana dizini (Customers-Shopping-Behavior) otomatik bulur
+base_path = Path(__file__).parent
+
+# 2. Assets klasöründeki görsele giden yolu oluşturur
+img_path = base_path / "assets" / "insight_hackers_cover.jpeg"
 
 with tab_home:
-    # Dosyanın varlığını kontrol edip hata basmasını sağlayalım
+    # 3. Dosyanın varlığını kontrol ederek yükle
     if img_path.exists():
-        st.image(str(img_path), use_container_width=True)
+        st.image(
+            str(img_path),
+            use_container_width=True
+        )
     else:
-        st.error(f"Görsel bulunamadı! Aranan tam yol: {img_path}")
+        # Eğer hala hata verirse, sistemin nereye baktığını ekranda görelim
+        st.error(f"Görsel bulunamadı. Aranan konum: {img_path}")
 
     st.divider()
 
