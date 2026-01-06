@@ -1791,14 +1791,21 @@ with tab_crm:
         target_mean = crm_summary["crm_target_rate"].mean()
         
         def crm_action(row):
+            # 1. Yüksek Abonelik & Yüksek Harcama -> En Değerli Müşteriler
             if row["crm_target_rate"] >= target_mean and row["avg_spend"] >= spend_median:
                 return "Upsell / Premium teklif"
-            elif row["crm_target_rate"] >= target_mean:
+    
+            # 2. Yüksek Abonelik & Düşük Harcama -> Sadık ama Küçük Alışveriş Yapanlar
+            elif row["crm_target_rate"] >= target_mean and row["avg_spend"] < spend_median:
                 return "Quick win / light incentive"
+    
+            # 3. Düşük Abonelik & Yüksek Harcama -> "Nurture / Education" (Potansiyeli yüksek ama abone değil)
             elif row["crm_target_rate"] < target_mean and row["avg_spend"] >= spend_median:
-                return "Retention / özel ilgi"
+                return "Nurture / Education (Özel İlgi)"
+    
+            # 4. Düşük Abonelik & Düşük Harcama -> Kaybedilmeye Yakın
             else:
-                return "Winback / agresif promosyon"
+                return "Winback / Agresif Promosyon"
         
         crm_summary['action'] = crm_summary.apply(crm_action, axis=1)
         
