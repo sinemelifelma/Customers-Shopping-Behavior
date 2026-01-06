@@ -528,6 +528,9 @@ from pathlib import Path
 
 # Dosya yolunu boşver, direkt internet linkini kullan:
 github_image_url = "https://raw.githubusercontent.com/sinemelifelma/customers-shopping-behavior/main/assets/insight_hackers_cover.jpeg"
+
+with tab_home:
+    st.image(github_image_url, use_container_width=True)
         
     st.divider()
 
