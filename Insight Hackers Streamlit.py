@@ -523,64 +523,6 @@ with st.spinner('Veri işleniyor...'):
 # =============================================================================
 # 🧾 BAŞLIK SAYFASI (Landing / Cover)
 # =============================================================================
-import os
-from pathlib import Path
-
-with tab_home:
-    # Dosya yolu yerine doğrudan GitHub linkini kullanıyoruz
-    img_url = "https://raw.githubusercontent.com/sinemelifelma/customers-shopping-behavior/main/assets/insight_hackers_cover.jpeg"
-
-    st.image(
-        img_url,
-        use_container_width=True
-    )
-        
-    st.divider()
-
-    # =============================================================================
-    # 👥 TAKIM ÜYELERİ
-    # =============================================================================
-    st.subheader("👥 Takım Üyeleri")
-
-    col_t1, col_t2, col_t3, col_t4 = st.columns(4)
-
-    with col_t1:
-        st.markdown("""
-        <div style="text-align:center;">
-            <div style="font-size:32px;"></div>
-            <b>Sinem Elif Elma</b><br/>
-            <span style="font-size:13px; opacity:0.85;"></span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_t2:
-        st.markdown("""
-        <div style="text-align:center;">
-            <div style="font-size:32px;"></div>
-            <b>Deniz Sağlık</b><br/>
-            <span style="font-size:13px; opacity:0.85;"></span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_t3:
-        st.markdown("""
-        <div style="text-align:center;">
-            <div style="font-size:32px;"></div>
-            <b>Ömer Faruk Çiçek</b><br/>
-            <span style="font-size:13px; opacity:0.85;"></span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_t4:
-        st.markdown("""
-        <div style="text-align:center;">
-            <div style="font-size:32px;"></div>
-            <b>Ece Yurdusevimli Metin</b><br/>
-            <span style="font-size:13px; opacity:0.85;"></span>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.divider()
 
     # =============================================================================
     # 📌 BUSINESS PROBLEM
