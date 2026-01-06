@@ -525,11 +525,8 @@ with st.spinner('Veri işleniyor...'):
 from pathlib import Path
 
 with tab_home:
-    img_path = base / "assets" / "insight_hackers_cover.jpeg"
 
-    st.image(
-        str(img_path),
-        use_container_width=True)
+    st.image("assets/insight_hackers_cover.jpeg", use_container_width=True)
 
     st.divider()
 
