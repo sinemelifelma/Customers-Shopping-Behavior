@@ -1767,18 +1767,17 @@ with tab_comp:
 # TAB 5: CRM ANALİZİ
 # =============================================================================
 with tab_crm:
-    st.header("💼 CRM ve Segment Bazlı Aksiyon Planı")
+    st.header("💼 CRM and Segment-Based Action Plan")
     
-    # LEVEL 1: Main check for data
+    # Check if the required data is in Session State
     if 'df_report' in st.session_state and st.session_state['df_report'] is not None:
         
-        # LEVEL 2: Inside the IF block (indented by 4 spaces)
         df_report = st.session_state['df_report']
         
-        # Calculate summary metrics
+        # 1. Calculate Cluster Metrics
         crm_summary = df_report.groupby('Cluster').agg({
             'CUSTOMER_ID': 'count',
-            'SUBSCRIPTION': 'mean',
+            'SUBSCRIPTION': 'mean', 
             'TOTAL_SPEND_WEIGHTED_NEW': 'mean',
             'PREVIOUS_PURCHASES': 'mean',
             'FREQUENCY_VALUE_NEW': 'mean',
@@ -1787,27 +1786,31 @@ with tab_crm:
         
         crm_summary.columns = ['n_customers', 'crm_target_rate', 'avg_spend', 'avg_prev_purchases', 'avg_freq', 'promo_rate']
         
-        # Logic for segment names
+        # 2. Get Segment Names from Mapping
         if 'crm_mapping' in st.session_state:
             mapping = st.session_state['crm_mapping']
             name_map = dict(zip(mapping['Cluster'], mapping['Segment İsmi']))
             crm_summary['Segment'] = crm_summary.index.map(name_map)
         
-        # Display the main dataframe
+        # 3. Formatting and Display
+        crm_display = crm_summary.copy()
+        crm_display['Abonelik Oranı'] = (crm_display['crm_target_rate'] * 100).round(1)
+        
         st.subheader("📊 Segment Performance Overview")
-        st.dataframe(crm_summary, use_container_width=True)
+        st.dataframe(crm_display[['Segment', 'n_customers', 'Abonelik Oranı', 'avg_spend']], use_container_width=True)
         
         st.divider()
 
-        # LEVEL 2: Call the Playbook (Line 1826 area)
+        # 4. Render Playbook (Called ONLY ONCE here)
+        # This checks the same session state we saved in the Segmentation tab
         if "profile_for_playbook" in st.session_state:
             render_segment_playbook(st.session_state["profile_for_playbook"])
         else:
-            st.warning("Please run Segmentation analysis first.")
+            st.info("Playbook data is being prepared...")
 
-    # LEVEL 1: This ELSE (Line 1829) MUST align with the IF at Level 1
+    # This 'else' aligns with the first 'if' at the top of the tab
     else:
-        st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
+        st.warning("⚠️ Action Required: Please go to the 'Segmentation' tab and run the analysis first to generate customer clusters.")
 
 # =============================================================================
 # TAB 6: SİMÜLATÖR
