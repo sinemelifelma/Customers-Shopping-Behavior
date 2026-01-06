@@ -526,27 +526,30 @@ with st.spinner('Veri işleniyor...'):
 import os
 from pathlib import Path
 
-# Mevcut dosyanın klasörünü bulur (/mount/src/customers-shopping-behavior/)
+# 1. Adım: Çalışan dosyanın tam konumunu bulalım
 current_dir = Path(__file__).parent.absolute()
 
-# Dosya yolunu oluşturur
+# 2. Adım: Görsel yolunu oluşturalım
+# GitHub'daki klasör yapına göre: assets/insight_hackers_cover.jpeg
 img_path = current_dir / "assets" / "insight_hackers_cover.jpeg"
 
 with tab_home:
-    # Dosya gerçekten orada mı? Önce kontrol edelim
+    # 3. Adım: Kontrol et ve yükle
     if img_path.exists():
         st.image(str(img_path), use_container_width=True)
     else:
-        # Eğer dosya yoksa, hatayı kırmızı kutuda detaylıca gösterir
-        st.error(f"Görsel bulunamadı!")
-        st.info(f"Sistem şu adrese baktı: {img_path}")
+        # Eğer hata alırsan burası çalışacak ve sana yolu gösterecek
+        st.error("Görsel Bulunamadı!")
+        st.warning(f"Sistem şu yolu arıyor: {img_path}")
         
-        # Hata ayıklama için klasör içeriğini göster (Sadece siz göreceksiniz)
-        assets_dir = current_dir / "assets"
-        if assets_dir.exists():
-            st.write("Assets içindeki dosyalar:", os.listdir(str(assets_dir)))
-        else:
-            st.write("Hata: 'assets' adında bir klasör ana dizinde yok!")
+        # 4. Adım: Hata ayıklama (Dedektif kısmı)
+        st.write("Klasörde ne var?")
+        try:
+            st.write("Mevcut dosyalar:", os.listdir(str(current_dir)))
+            if os.path.exists(current_dir / "assets"):
+                st.write("Assets içindekiler:", os.listdir(str(current_dir / "assets")))
+        except Exception as e:
+            st.write("Dizin listelenemedi:", e)
         
     st.divider()
 
