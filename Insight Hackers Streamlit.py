@@ -524,25 +524,24 @@ with st.spinner('Veri işleniyor...'):
 # 🧾 BAŞLIK SAYFASI (Landing / Cover)
 # =============================================================================
 import streamlit as st
+import os
 from pathlib import Path
 
-# 1. Ana dizini (Customers-Shopping-Behavior) otomatik bulur
-base_path = Path(__file__).parent
+# Scriptin çalıştığı klasörü tam yol olarak alalım
+current_dir = Path(__file__).parent.absolute()
 
-# 2. Assets klasöründeki görsele giden yolu oluşturur
-img_path = base_path / "assets" / "insight_hackers_cover.jpeg"
+# Görselin tam yolunu birleştirelim
+img_path = current_dir / "assets" / "insight_hackers_cover.jpeg"
 
 with tab_home:
-    # 3. Dosyanın varlığını kontrol ederek yükle
-    if img_path.exists():
-        st.image(
-            str(img_path),
-            use_container_width=True
-        )
+    # Dosya var mı yok mu kontrol et
+    if os.path.exists(img_path):
+        st.image(str(img_path), use_container_width=True)
     else:
-        # Eğer hala hata verirse, sistemin nereye baktığını ekranda görelim
-        st.error(f"Görsel bulunamadı. Aranan konum: {img_path}")
-
+        # Hata devam ederse burası çalışacak ve size ipucu verecek
+        st.error(f"Dosya bulunamadı! Aranan yol: {img_path}")
+        st.info("Lütfen GitHub'daki 'assets' klasörünün isminin tamamen küçük harf olduğunu kontrol edin.")
+        
     st.divider()
 
     # =============================================================================
