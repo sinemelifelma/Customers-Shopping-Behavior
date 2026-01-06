@@ -1819,17 +1819,17 @@ with tab_crm:
         st.warning("⚠️ Lütfen önce 'Segmentasyon' sekmesine giderek analizi çalıştırın.")
 
     st.divider()
-    # Segment Playbook fonksiyonunu çağır (Eğer varsa)
-    if "display_df" in locals() or "mapping_info" in locals():
-        render_segment_playbook(segment_profiles)
         # =============================================================================
-        # 💡 SEGMENT BAZLI AKSİYON PLAYBOOK (SADECE CRM'DE)
+        # 💡 THE PLAYBOOK (CALLED ONLY ONCE HERE)
         # =============================================================================
-
-        if "display_df" not in st.session_state:
-            st.warning("Playbook için önce Segmentasyon adımını çalıştırmalısınız.")
+        # Use the session state data to render the UI cards
+        if "profile_for_playbook" in st.session_state:
+            render_segment_playbook(st.session_state["profile_for_playbook"])
         else:
-            render_segment_playbook(st.session_state["display_df"])
+            st.warning("Please run the Segmentation analysis to view the Playbook details.")
+
+    else:
+        st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first to generate customer clusters.")
 
 # =============================================================================
 # TAB 6: SİMÜLATÖR
