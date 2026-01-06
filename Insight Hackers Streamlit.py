@@ -1822,14 +1822,14 @@ with tab_crm:
 
         # 2. THE PLAYBOOK (Line 1826 area)
         # Ensure 'if' is aligned with 'df_report = ...' above
-        if "profile_for_playbook" in st.session_state:
-            render_segment_playbook(st.session_state["profile_for_playbook"])
-        else:
-            st.warning("Please run the Segmentation analysis to view the Playbook details.")
-
+    if "profile_for_playbook" in st.session_state:
+        render_segment_playbook(st.session_state["profile_for_playbook"])
     else:
-        # This else must align with the 'if df_report' at the top
-        st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
+        st.warning("Please run the Segmentation analysis to view the Playbook details.")
+
+else:
+    # This else must align with the 'if df_report' at the top
+    st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
 
 # =============================================================================
 # TAB 6: SİMÜLATÖR
