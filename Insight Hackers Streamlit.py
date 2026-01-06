@@ -1826,7 +1826,6 @@ with tab_crm:
         render_segment_playbook(st.session_state["profile_for_playbook"])
     else:
         st.warning("Please run the Segmentation analysis to view the Playbook details.")
-
 else:
     # This else must align with the 'if df_report' at the top
     st.warning("⚠️ Access Denied: Please run the 'Segmentation' tab first.")
